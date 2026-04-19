@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getProductImage, getProductImageAsync } from '@/lib/imageService';
+import { getProductImage } from '@/lib/imageService';
+import { getDailyMedImage, getRxImage } from '@/lib/imageServiceAdvanced';
 import { Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,30 +21,42 @@ export default function ProductImage({
   product, 
   width = 80, 
   height = 80,
-  className,
-  useUnsplash = true
-}: ProductImageProps & { useUnsplash?: boolean }) {
+  className
+}: ProductImageProps) {
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const [imageUrl, setImageUrl] = useState<string>('');
 
-  // Cargar imagen (primero icono rápido, luego Unsplash si está habilitado)
+  // Cargar imagen: primero icono rápido, luego APIs avanzadas (DailyMed, RxImage)
   useEffect(() => {
-    // Mostrar imagen inicial rápida
+    // Mostrar imagen inicial rápida (icono de categoría)
     const initialUrl = getProductImage(product, width, height);
     setImageUrl(initialUrl);
 
-    // Si está habilitado Unsplash y no tiene imagen personalizada, intentar cargar de Unsplash
-    if (useUnsplash && !product.imageUrl && product.category) {
-      getProductImageAsync(product).then(url => {
-        if (url !== initialUrl) {
-          setImageUrl(url);
+    // Si no tiene imagen personalizada, intentar APIs avanzadas
+    if (!product.imageUrl) {
+      const loadAdvancedImage = async () => {
+        try {
+          // 1. Intentar DailyMed (imágenes oficiales de empaques)
+          let advancedUrl = await getDailyMedImage(product.name);
+          
+          // 2. Si DailyMed falla, intentar RxImage (fotos de pastillas)
+          if (!advancedUrl) {
+            advancedUrl = await getRxImage({ name: product.name });
+          }
+
+          // Si encontramos imagen avanzada, actualizar
+          if (advancedUrl && advancedUrl !== initialUrl) {
+            setImageUrl(advancedUrl);
+          }
+        } catch {
+          // Mantener imagen inicial si fallan todas las APIs
         }
-      }).catch(() => {
-        // Mantener imagen inicial si falla
-      });
+      };
+
+      loadAdvancedImage();
     }
-  }, [product.name, product.category, product.imageUrl, width, height, useUnsplash]);
+  }, [product.name, product.category, product.imageUrl, width, height]);
 
   // Si hay error cargando, mostrar icono
   const showFallback = error || !imageUrl;
@@ -77,8 +90,8 @@ export default function ProductImage({
         </div>
       )}
 
-      {/* Overlay con iniciales si no hay imagen personalizada y no es de Unsplash */}
-      {!product.imageUrl && loaded && !imageUrl.includes('unsplash.com') && (
+      {/* Overlay con iniciales si no hay imagen personalizada y no es de API médica */}
+      {!product.imageUrl && loaded && !imageUrl.includes('dailymed.nlm.nih.gov') && !imageUrl.includes('rximage.nlm.nih.gov') && (
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-500/10 to-primary-600/10">
           <span className="text-lg font-bold text-primary-700">
             {product.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}

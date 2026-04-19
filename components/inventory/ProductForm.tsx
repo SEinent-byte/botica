@@ -1,11 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Product } from '@/types';
 import Button from '@/components/ui/Button';
 import Input from '@/components/ui/Input';
 import Modal from '@/components/ui/Modal';
+import Alert from '@/components/ui/Alert';
 import { categories } from '@/lib/data';
+import { CheckCircle } from 'lucide-react';
 
 interface ProductFormProps {
   product?: Product | null;
@@ -15,6 +17,8 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ product, isOpen, onClose, onSave }: ProductFormProps) {
+  const [isSaving, setIsSaving] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
   const [formData, setFormData] = useState({
     name: product?.name || '',
     description: product?.description || '',
@@ -28,6 +32,26 @@ export default function ProductForm({ product, isOpen, onClose, onSave }: Produc
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Resetear estado cuando se abre/cierra el modal
+  useEffect(() => {
+    if (isOpen) {
+      setIsSaving(false);
+      setShowSuccess(false);
+      setFormData({
+        name: product?.name || '',
+        description: product?.description || '',
+        price: product?.price || 0,
+        stock: product?.stock || 0,
+        minStock: product?.minStock || 10,
+        category: product?.category || categories[0],
+        expirationDate: product?.expirationDate || '',
+        barcode: product?.barcode || '',
+        laboratory: product?.laboratory || '',
+      });
+      setErrors({});
+    }
+  }, [isOpen, product]);
 
   const validate = () => {
     const newErrors: Record<string, string> = {};
@@ -49,11 +73,25 @@ export default function ProductForm({ product, isOpen, onClose, onSave }: Produc
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (validate()) {
+      setIsSaving(true);
+      
+      // Simular delay para mostrar estado de guardando
+      await new Promise(resolve => setTimeout(resolve, 300));
+      
       onSave(formData);
-      onClose();
+      
+      // Mostrar éxito brevemente antes de cerrar
+      setIsSaving(false);
+      setShowSuccess(true);
+      
+      // Cerrar después de mostrar el éxito
+      setTimeout(() => {
+        setShowSuccess(false);
+        onClose();
+      }, 800);
     }
   };
 
@@ -163,12 +201,36 @@ export default function ProductForm({ product, isOpen, onClose, onSave }: Produc
           />
         </div>
 
-        <div className="flex gap-3 pt-4">
-          <Button type="button" variant="outline" onClick={onClose} className="flex-1">
+        {/* Feedback en tiempo real */}
+        {showSuccess && (
+          <div className="animate-in fade-in slide-in-from-top-2 duration-300">
+            <Alert variant="success" className="mb-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-5 h-5" />
+                <span>{product ? '¡Producto actualizado!' : '¡Producto creado!'}</span>
+              </div>
+            </Alert>
+          </div>
+        )}
+
+        <div className="flex gap-3 pt-2">
+          <Button 
+            type="button" 
+            variant="outline" 
+            onClick={onClose} 
+            className="flex-1"
+            disabled={isSaving}
+          >
             Cancelar
           </Button>
-          <Button type="submit" variant="primary" className="flex-1">
-            {product ? 'Guardar Cambios' : 'Crear Producto'}
+          <Button 
+            type="submit" 
+            variant="primary" 
+            className="flex-1"
+            disabled={isSaving}
+            isLoading={isSaving}
+          >
+            {isSaving ? 'Guardando...' : product ? 'Guardar Cambios' : 'Crear Producto'}
           </Button>
         </div>
       </form>
