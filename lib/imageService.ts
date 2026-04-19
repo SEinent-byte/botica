@@ -17,8 +17,9 @@ export function getDiceBearIcon(seed: string, style: 'identicon' | 'bottts' | 'a
   return `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}&backgroundColor=10b981`;
 }
 
-// Opción 4: Unsplash - Imágenes reales de medicamentos (requiere API key para producción)
-const UNSPLASH_ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_KEY || '';
+// Opción 4: Unsplash - Imágenes reales de medicamentos
+// API Key proporcionada - En producción usar variables de entorno
+const UNSPLASH_ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_KEY || '6E6R2MYVtxI0LwtA-v-rfp3PdPdb5Ur9IrPOfq0kjKA';
 
 export async function getUnsplashImage(query: string): Promise<string | null> {
   if (!UNSPLASH_ACCESS_KEY) {
@@ -62,6 +63,26 @@ export function getCategoryImage(category: string): string {
   return categoryImages[category.toLowerCase()] || categoryImages.default;
 }
 
+// Mapeo de categorías a términos de búsqueda para Unsplash
+const unsplashQueries: Record<string, string> = {
+  'analgesicos': 'medicine pill white',
+  'antiinflamatorios': 'medicine capsule pharmacy',
+  'antialergicos': 'allergy medicine tablet',
+  'gastrointestinales': 'stomach medicine health',
+  'suplementos': 'vitamin supplement bottle',
+  'cuidado_personal': 'skincare cosmetic product',
+  'medicamentos': 'pharmacy drug medicine',
+  'vitaminas': 'vitamin bottle health',
+  'default': 'medicine pharmacy pill',
+};
+
+// Obtener URL de Unsplash para una categoría
+export async function getUnsplashImageByCategory(category: string): Promise<string> {
+  const query = unsplashQueries[category.toLowerCase()] || unsplashQueries.default;
+  const imageUrl = await getUnsplashImage(query);
+  return imageUrl || categoryImages.default;
+}
+
 // Opción RECOMENDADA: Combinación inteligente
 export function getProductImage(product: {
   name: string;
@@ -78,4 +99,23 @@ export function getProductImage(product: {
 
   // Fallback: Generar avatar con iniciales del producto
   return getUIAvatar(product.name, Math.max(width, height));
+}
+
+// Función async para obtener imagen con Unsplash (usa en componentes con useEffect)
+export async function getProductImageAsync(product: {
+  name: string;
+  category?: string;
+  imageUrl?: string | null;
+}): Promise<string> {
+  // Si ya tiene imagen, usarla
+  if (product.imageUrl) return product.imageUrl;
+
+  // Intentar obtener de Unsplash por categoría
+  if (product.category) {
+    const unsplashUrl = await getUnsplashImageByCategory(product.category);
+    if (unsplashUrl) return unsplashUrl;
+  }
+
+  // Fallback: Generar avatar con iniciales
+  return getUIAvatar(product.name, 200);
 }

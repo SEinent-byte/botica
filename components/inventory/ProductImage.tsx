@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { getProductImage } from '@/lib/imageService';
+import { useState, useEffect } from 'react';
+import { getProductImage, getProductImageAsync } from '@/lib/imageService';
 import { Package } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,16 +20,33 @@ export default function ProductImage({
   product, 
   width = 80, 
   height = 80,
-  className 
-}: ProductImageProps) {
+  className,
+  useUnsplash = true
+}: ProductImageProps & { useUnsplash?: boolean }) {
   const [error, setError] = useState(false);
   const [loaded, setLoaded] = useState(false);
+  const [imageUrl, setImageUrl] = useState<string>('');
 
-  // Obtener URL de imagen
-  const imageUrl = getProductImage(product, width, height);
+  // Cargar imagen (primero icono rápido, luego Unsplash si está habilitado)
+  useEffect(() => {
+    // Mostrar imagen inicial rápida
+    const initialUrl = getProductImage(product, width, height);
+    setImageUrl(initialUrl);
 
-  // Si hay error cargando o es un placeholder con texto muy largo, mostrar icono
-  const showFallback = error || (!loaded && !product.imageUrl);
+    // Si está habilitado Unsplash y no tiene imagen personalizada, intentar cargar de Unsplash
+    if (useUnsplash && !product.imageUrl && product.category) {
+      getProductImageAsync(product).then(url => {
+        if (url !== initialUrl) {
+          setImageUrl(url);
+        }
+      }).catch(() => {
+        // Mantener imagen inicial si falla
+      });
+    }
+  }, [product.name, product.category, product.imageUrl, width, height, useUnsplash]);
+
+  // Si hay error cargando, mostrar icono
+  const showFallback = error || !imageUrl;
 
   return (
     <div 
@@ -60,8 +77,8 @@ export default function ProductImage({
         </div>
       )}
 
-      {/* Overlay con iniciales si no hay imagen personalizada */}
-      {!product.imageUrl && loaded && (
+      {/* Overlay con iniciales si no hay imagen personalizada y no es de Unsplash */}
+      {!product.imageUrl && loaded && !imageUrl.includes('unsplash.com') && (
         <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-500/10 to-primary-600/10">
           <span className="text-lg font-bold text-primary-700">
             {product.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()}
