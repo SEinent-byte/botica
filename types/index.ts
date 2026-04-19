@@ -9,6 +9,7 @@ export interface Product {
   expirationDate: string;
   barcode: string;
   laboratory?: string;
+  imageUrl?: string | null;
   createdAt: string;
   updatedAt: string;
 }

@@ -4,6 +4,7 @@ import { Product } from '@/types';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/Table';
 import Badge from '@/components/ui/Badge';
 import Button from '@/components/ui/Button';
+import ProductImage from './ProductImage';
 import { Edit2, Trash2, AlertTriangle } from 'lucide-react';
 
 interface ProductTableProps {
@@ -59,9 +60,12 @@ export default function ProductTable({ products, onEdit, onDelete }: ProductTabl
             return (
               <TableRow key={product.id}>
                 <TableCell>
-                  <div>
-                    <p className="font-medium text-gray-900">{product.name}</p>
-                    <p className="text-sm text-gray-500">{product.laboratory || 'Sin laboratorio'}</p>
+                  <div className="flex items-center gap-4">
+                    <ProductImage product={product} width={56} height={56} />
+                    <div>
+                      <p className="font-medium text-slate-900">{product.name}</p>
+                      <p className="text-sm text-slate-500">{product.laboratory || 'Sin laboratorio'}</p>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell>
