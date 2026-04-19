@@ -52,24 +52,24 @@ export default function Sidebar() {
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 z-40 h-screen w-72 bg-gradient-to-b from-white to-slate-50/80 backdrop-blur-xl border-r border-white/50 shadow-elevated transition-transform duration-300 ease-in-out',
+          'fixed top-0 left-0 z-40 h-screen w-72 bg-white border-r border-slate-200 shadow-[4px_0_24px_rgba(0,0,0,0.08)] transition-transform duration-300 ease-in-out',
           'lg:translate-x-0',
           isOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
         {/* Logo */}
-        <div className="flex items-center gap-4 px-6 py-6 border-b border-slate-100">
-          <div className="p-3 bg-gradient-to-br from-primary-500 to-primary-600 rounded-2xl shadow-glow">
+        <div className="flex items-center gap-4 px-6 py-6 bg-gradient-to-r from-primary-600 to-primary-500">
+          <div className="p-2.5 bg-white/20 backdrop-blur-sm rounded-xl shadow-lg">
             <Pill className="w-7 h-7 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold text-gradient">Nova Salud</h1>
-            <p className="text-xs text-slate-500 font-medium tracking-wide">SISTEMA DE GESTIÓN</p>
+            <h1 className="text-xl font-bold text-white drop-shadow-md">Nova Salud</h1>
+            <p className="text-xs text-primary-100 font-semibold tracking-wider">SISTEMA DE GESTIÓN</p>
           </div>
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
+        <nav className="flex-1 px-3 py-6 space-y-2 overflow-y-auto bg-slate-50/50">
           {navigation.map((item) => {
             const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const Icon = item.icon;
@@ -80,10 +80,10 @@ export default function Sidebar() {
                 href={item.href}
                 onClick={() => setIsOpen(false)}
                 className={cn(
-                  'flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 group',
+                  'flex items-center gap-3 px-4 py-3.5 rounded-xl text-sm font-semibold transition-all duration-200 group mx-1',
                   isActive
-                    ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white shadow-glow shadow-primary-500/30'
-                    : 'text-slate-600 hover:bg-white hover:shadow-soft hover:text-primary-600'
+                    ? 'bg-gradient-to-r from-primary-600 to-primary-500 text-white shadow-lg shadow-primary-500/40 translate-x-1'
+                    : 'text-slate-600 hover:bg-white hover:shadow-md hover:text-primary-600 hover:translate-x-1'
                 )}
               >
                 <Icon className={cn('w-5 h-5 transition-transform group-hover:scale-110', isActive ? 'text-white' : 'text-slate-400 group-hover:text-primary-500')} />
@@ -94,9 +94,9 @@ export default function Sidebar() {
         </nav>
 
         {/* Footer */}
-        <div className="px-6 py-5 border-t border-slate-100 bg-gradient-to-r from-slate-50/50 to-white">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-sm shadow-glow">
+        <div className="px-5 py-4 border-t border-slate-200 bg-white">
+          <div className="flex items-center gap-3 p-3 rounded-xl bg-slate-50 border border-slate-100">
+            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
               A
             </div>
             <div className="flex-1 min-w-0">

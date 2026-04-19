@@ -91,13 +91,13 @@ export default function SalesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-100">
       <Sidebar />
       
-      <div className="lg:ml-64">
+      <div className="lg:ml-72">
         <Header title="Historial de Ventas" subtitle="Gestión y seguimiento de ventas" />
         
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="p-6 sm:p-8 lg:p-10">
           {/* Filters */}
           <Card className="mb-6">
             <CardContent className="p-4">

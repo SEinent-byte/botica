@@ -113,15 +113,15 @@ export default function AlertsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-cyan-50/30 to-slate-100">
       <Sidebar />
       
-      <div className="lg:ml-64">
+      <div className="lg:ml-72">
         <Header title="Alertas de Inventario" subtitle="Monitoreo de stock y vencimientos" />
         
-        <main className="p-4 sm:p-6 lg:p-8">
+        <main className="p-6 sm:p-8 lg:p-10">
           {/* Summary Cards */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
             <button
               onClick={() => setFilter('all')}
               className={`p-4 rounded-xl border-2 text-left transition-all ${
