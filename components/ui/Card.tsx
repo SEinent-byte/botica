@@ -22,13 +22,20 @@ const Card = forwardRef<HTMLDivElement, CardProps>(
       lg: 'shadow-lg',
     };
 
+    const shadowsNew = {
+      none: '',
+      sm: 'shadow-soft',
+      md: 'shadow-elevated',
+      lg: 'shadow-2xl',
+    };
+
     return (
       <div
         ref={ref}
         className={cn(
-          'bg-white rounded-xl border border-gray-200',
+          'bg-gradient-to-br from-white to-slate-50/90 rounded-2xl border border-slate-200/60 backdrop-blur-sm',
           paddings[padding],
-          shadows[shadow],
+          shadowsNew[shadow],
           className
         )}
         {...props}
@@ -43,7 +50,7 @@ Card.displayName = 'Card';
 
 export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, children, ...props }, ref) => (
-    <div ref={ref} className={cn('flex items-center justify-between mb-4', className)} {...props}>
+    <div ref={ref} className={cn('flex items-center justify-between mb-5 pb-4 border-b border-slate-100', className)} {...props}>
       {children}
     </div>
   )
@@ -52,7 +59,7 @@ CardHeader.displayName = 'CardHeader';
 
 export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadingElement>>(
   ({ className, children, ...props }, ref) => (
-    <h3 ref={ref} className={cn('text-lg font-semibold text-gray-900', className)} {...props}>
+    <h3 ref={ref} className={cn('text-xl font-bold text-gradient', className)} {...props}>
       {children}
     </h3>
   )

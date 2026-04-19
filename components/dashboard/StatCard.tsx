@@ -26,21 +26,24 @@ export default function StatCard({
   };
 
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-6 shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex items-start justify-between">
-        <div>
-          <p className="text-sm font-medium text-gray-600">{title}</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{value}</p>
+    <div className="group relative bg-gradient-to-br from-white to-slate-50/80 rounded-2xl border border-slate-200/60 p-6 shadow-soft hover:shadow-elevated transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+      {/* Gradient overlay on hover */}
+      <div className="absolute inset-0 bg-gradient-to-br from-primary-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+      
+      <div className="relative flex items-start justify-between">
+        <div className="flex-1">
+          <p className="text-sm font-semibold text-slate-500 tracking-wide uppercase">{title}</p>
+          <p className="text-3xl font-extrabold text-slate-800 mt-2 bg-clip-text">{value}</p>
           {change && (
             <span className={
-              `inline-flex items-center px-2 py-1 rounded-full text-xs font-medium mt-2 ${changeColors[changeType]}`
+              `inline-flex items-center px-3 py-1.5 rounded-full text-xs font-bold mt-3 shadow-sm ${changeColors[changeType]}`
             }>
               {change}
             </span>
           )}
         </div>
-        <div className={`p-3 rounded-xl ${iconBg}`}>
-          <Icon className={`w-6 h-6 ${iconColor}`} />
+        <div className={`p-4 rounded-2xl ${iconBg} shadow-glow group-hover:scale-110 transition-transform duration-300`}>
+          <Icon className={`w-7 h-7 ${iconColor}`} />
         </div>
       </div>
     </div>

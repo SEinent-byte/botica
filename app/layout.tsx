@@ -12,8 +12,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
-      <body className="antialiased">{children}</body>
+    <html lang="es" className="scroll-smooth">
+      <body className="antialiased min-h-screen bg-gradient-to-br from-slate-50 via-emerald-50/30 to-slate-100">{children}</body>
     </html>
   );
 }

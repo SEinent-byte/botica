@@ -14,13 +14,13 @@ export default function Badge({
   ...props
 }: BadgeProps) {
   const variants = {
-    default: 'bg-gray-100 text-gray-800',
-    primary: 'bg-primary-100 text-primary-800',
-    secondary: 'bg-secondary-100 text-secondary-800',
-    success: 'bg-green-100 text-green-800',
-    danger: 'bg-danger-100 text-danger-800',
-    warning: 'bg-warning-100 text-warning-800',
-    info: 'bg-blue-100 text-blue-800',
+    default: 'bg-slate-100 text-slate-700 border border-slate-200',
+    primary: 'bg-gradient-to-r from-primary-500/10 to-primary-600/10 text-primary-700 border border-primary-200',
+    secondary: 'bg-gradient-to-r from-secondary-500/10 to-secondary-600/10 text-secondary-700 border border-secondary-200',
+    success: 'bg-gradient-to-r from-green-500/10 to-emerald-500/10 text-emerald-700 border border-emerald-200',
+    danger: 'bg-gradient-to-r from-danger-500/10 to-danger-600/10 text-danger-700 border border-danger-200',
+    warning: 'bg-gradient-to-r from-warning-500/10 to-warning-600/10 text-warning-700 border border-warning-200',
+    info: 'bg-gradient-to-r from-blue-500/10 to-blue-600/10 text-blue-700 border border-blue-200',
   };
 
   const sizes = {
@@ -31,7 +31,7 @@ export default function Badge({
   return (
     <span
       className={cn(
-        'inline-flex items-center font-medium rounded-full',
+        'inline-flex items-center font-bold rounded-full shadow-sm',
         variants[variant],
         sizes[size],
         className
